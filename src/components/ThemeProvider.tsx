@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, useSyncExternalStore } from "react";
 
 type Theme = "dark" | "light";
 
@@ -18,20 +18,19 @@ export function useTheme() {
   return useContext(ThemeContext);
 }
 
+function getStoredTheme(): Theme {
+  if (typeof window === "undefined") return "dark";
+  const saved = localStorage.getItem("theme");
+  return saved === "light" ? "light" : "dark";
+}
+
+const subscribe = () => () => {};
+
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("dark");
-  const [mounted, setMounted] = useState(false);
+  const initialTheme = useSyncExternalStore(subscribe, getStoredTheme, () => "dark" as Theme);
+  const [theme, setTheme] = useState<Theme>(initialTheme);
 
   useEffect(() => {
-    const saved = localStorage.getItem("theme") as Theme | null;
-    if (saved === "light" || saved === "dark") {
-      setTheme(saved);
-    }
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!mounted) return;
     const root = document.documentElement;
     if (theme === "light") {
       root.classList.add("light");
@@ -41,7 +40,7 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
       document.body.classList.remove("light-bg");
     }
     localStorage.setItem("theme", theme);
-  }, [theme, mounted]);
+  }, [theme]);
 
   const toggleTheme = useCallback(() => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
