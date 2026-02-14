@@ -1,6 +1,8 @@
 "use client";
 
 import { useReducer, useEffect } from "react";
+import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
 import { Category, DrawnCard, ReadingStep } from "@/lib/types";
 import { createSeed, drawThreeCardSpread } from "@/lib/shuffle";
@@ -67,33 +69,64 @@ function reducer(state: State, action: Action): State {
 }
 
 export default function Home() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { reading, isLoading, error, fetchReading, reset } = useReading();
 
   useEffect(() => {
-    if (state.revealedCount === 3 && state.step === "spread") {
+    if (status === "unauthenticated") {
+      router.replace("/login");
+    }
+  }, [status, router]);
+
+  useEffect(() => {
+    if (session && state.revealedCount === 3 && state.step === "spread") {
       const timer = setTimeout(() => {
         dispatch({ type: "START_READING" });
         fetchReading(state.question, state.category!, state.drawnCards);
       }, 800);
       return () => clearTimeout(timer);
     }
-  }, [state.revealedCount, state.step, state.question, state.category, state.drawnCards, fetchReading]);
+  }, [session, state.revealedCount, state.step, state.question, state.category, state.drawnCards, fetchReading]);
 
   useEffect(() => {
-    if (!isLoading && reading && state.step === "reading") {
+    if (session && !isLoading && reading && state.step === "reading") {
       dispatch({ type: "READING_COMPLETE" });
     }
-  }, [isLoading, reading, state.step]);
+  }, [session, isLoading, reading, state.step]);
 
   const handleReset = () => {
     dispatch({ type: "RESET" });
     reset();
   };
 
+  if (status === "loading") {
+    return (
+      <div className="flex min-h-dvh items-center justify-center">
+        <p className="text-foreground/50">読み込み中...</p>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return null;
+  }
+
   return (
     <div className="relative z-10 flex min-h-dvh flex-col items-center px-4 py-8">
-      <header className="mb-8 flex flex-col items-center gap-4">
+      <header className="mb-8 flex w-full max-w-lg flex-col items-center gap-4">
+        <div className="flex w-full items-center justify-between">
+          <span className="text-xs text-foreground/40">
+            {session.user?.name}
+          </span>
+          <button
+            onClick={() => signOut()}
+            className="text-xs text-foreground/40 underline transition-colors hover:text-foreground/70"
+          >
+            ログアウト
+          </button>
+        </div>
         <h1 className="text-2xl font-bold tracking-wider text-foreground">
           {"\u2728"} タロット占い {"\u2728"}
         </h1>
