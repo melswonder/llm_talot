@@ -80,6 +80,27 @@ export default function Home() {
     }
   }, [status, router]);
 
+  useEffect(() => {
+    if (session && state.revealedCount === 3 && state.step === "spread") {
+      const timer = setTimeout(() => {
+        dispatch({ type: "START_READING" });
+        fetchReading(state.question, state.category!, state.drawnCards);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [session, state.revealedCount, state.step, state.question, state.category, state.drawnCards, fetchReading]);
+
+  useEffect(() => {
+    if (session && !isLoading && reading && state.step === "reading") {
+      dispatch({ type: "READING_COMPLETE" });
+    }
+  }, [session, isLoading, reading, state.step]);
+
+  const handleReset = () => {
+    dispatch({ type: "RESET" });
+    reset();
+  };
+
   if (status === "loading") {
     return (
       <div className="flex min-h-dvh items-center justify-center">
@@ -91,27 +112,6 @@ export default function Home() {
   if (!session) {
     return null;
   }
-
-  useEffect(() => {
-    if (state.revealedCount === 3 && state.step === "spread") {
-      const timer = setTimeout(() => {
-        dispatch({ type: "START_READING" });
-        fetchReading(state.question, state.category!, state.drawnCards);
-      }, 800);
-      return () => clearTimeout(timer);
-    }
-  }, [state.revealedCount, state.step, state.question, state.category, state.drawnCards, fetchReading]);
-
-  useEffect(() => {
-    if (!isLoading && reading && state.step === "reading") {
-      dispatch({ type: "READING_COMPLETE" });
-    }
-  }, [isLoading, reading, state.step]);
-
-  const handleReset = () => {
-    dispatch({ type: "RESET" });
-    reset();
-  };
 
   return (
     <div className="relative z-10 flex min-h-dvh flex-col items-center px-4 py-8">
