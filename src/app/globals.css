@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0c0a1a;
+  --foreground: #e8e4f0;
+  --accent: #8b5cf6;
+  --accent-dim: #6d28d9;
+  --card-bg: #1a1630;
+  --card-border: #2d2754;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-accent-dim: var(--accent-dim);
+  --color-card-bg: var(--card-bg);
+  --color-card-border: var(--card-border);
+  --font-sans: var(--font-noto-sans-jp);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-noto-sans-jp), sans-serif;
+  min-height: 100dvh;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(139, 92, 246, 0.12) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
