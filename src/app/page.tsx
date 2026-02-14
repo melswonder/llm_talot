@@ -1,6 +1,8 @@
 "use client";
 
 import { useReducer, useEffect } from "react";
+import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
 import { Category, DrawnCard, ReadingStep } from "@/lib/types";
 import { createSeed, drawThreeCardSpread } from "@/lib/shuffle";
@@ -67,8 +69,28 @@ function reducer(state: State, action: Action): State {
 }
 
 export default function Home() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { reading, isLoading, error, fetchReading, reset } = useReading();
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.replace("/login");
+    }
+  }, [status, router]);
+
+  if (status === "loading") {
+    return (
+      <div className="flex min-h-dvh items-center justify-center">
+        <p className="text-foreground/50">読み込み中...</p>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return null;
+  }
 
   useEffect(() => {
     if (state.revealedCount === 3 && state.step === "spread") {
@@ -93,7 +115,18 @@ export default function Home() {
 
   return (
     <div className="relative z-10 flex min-h-dvh flex-col items-center px-4 py-8">
-      <header className="mb-8 flex flex-col items-center gap-4">
+      <header className="mb-8 flex w-full max-w-lg flex-col items-center gap-4">
+        <div className="flex w-full items-center justify-between">
+          <span className="text-xs text-foreground/40">
+            {session.user?.name}
+          </span>
+          <button
+            onClick={() => signOut()}
+            className="text-xs text-foreground/40 underline transition-colors hover:text-foreground/70"
+          >
+            ログアウト
+          </button>
+        </div>
         <h1 className="text-2xl font-bold tracking-wider text-foreground">
           {"\u2728"} タロット占い {"\u2728"}
         </h1>
