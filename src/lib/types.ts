@@ -26,4 +26,4 @@ export interface ReadingRequest {
   drawnCards: DrawnCard[];
 }
 
-export type ReadingStep = "input" | "spread" | "reading" | "result";
+export type ReadingStep = "input" | "select" | "spread" | "reading" | "result";
