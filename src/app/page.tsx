@@ -8,6 +8,7 @@ import { Category, DrawnCard, ReadingStep } from "@/lib/types";
 import { createSeed, drawThreeCardSpread } from "@/lib/shuffle";
 import { useReading } from "@/hooks/useReading";
 import StepIndicator from "@/components/StepIndicator";
+import ThemeToggle from "@/components/ThemeToggle";
 import QuestionInput from "@/components/QuestionInput";
 import CardSpread from "@/components/CardSpread";
 import LoadingOracle from "@/components/LoadingOracle";
@@ -120,12 +121,15 @@ export default function Home() {
           <span className="text-xs text-foreground/40">
             {session.user?.name}
           </span>
-          <button
-            onClick={() => signOut()}
-            className="text-xs text-foreground/40 underline transition-colors hover:text-foreground/70"
-          >
-            ログアウト
-          </button>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <button
+              onClick={() => signOut()}
+              className="text-xs text-foreground/40 underline transition-colors hover:text-foreground/70"
+            >
+              ログアウト
+            </button>
+          </div>
         </div>
         <h1 className="text-2xl font-bold tracking-wider text-foreground">
           {"\u2728"} タロット占い {"\u2728"}
@@ -177,8 +181,8 @@ export default function Home() {
         </AnimatePresence>
 
         {error && (
-          <div className="mt-4 rounded-lg border border-red-500/30 bg-red-950/20 px-4 py-3">
-            <p className="text-sm text-red-400">{error}</p>
+          <div className="mt-4 rounded-lg border border-red-500/30 bg-error-bg px-4 py-3">
+            <p className="text-sm text-error-text">{error}</p>
             <button
               onClick={handleReset}
               className="mt-2 text-xs text-foreground/50 underline"

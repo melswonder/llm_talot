@@ -4,11 +4,11 @@ import { motion } from "framer-motion";
 import { DrawnCard, Suit } from "@/lib/types";
 
 const SUIT_COLORS: Record<Suit | "major", string> = {
-  wands: "border-red-500/60 bg-red-950/30",
-  cups: "border-blue-500/60 bg-blue-950/30",
-  swords: "border-slate-400/60 bg-slate-900/30",
-  pentacles: "border-emerald-500/60 bg-emerald-950/30",
-  major: "border-amber-500/60 bg-amber-950/30",
+  wands: "border-red-500/60 bg-suit-wands-bg",
+  cups: "border-blue-500/60 bg-suit-cups-bg",
+  swords: "border-slate-400/60 bg-suit-swords-bg",
+  pentacles: "border-emerald-500/60 bg-suit-pentacles-bg",
+  major: "border-amber-500/60 bg-suit-major-bg",
 };
 
 const SUIT_ICONS: Record<Suit | "major", string> = {
@@ -76,7 +76,7 @@ export default function TarotCard({ drawnCard, isRevealed, onClick }: Props) {
             {card.nameEn}
           </span>
           {isReversed && (
-            <span className="mt-2 rounded-full bg-purple-800/80 px-2 py-0.5 text-xs text-purple-200">
+            <span className="mt-2 rounded-full bg-badge-bg px-2 py-0.5 text-xs text-badge-text">
               逆位置
             </span>
           )}
@@ -84,7 +84,7 @@ export default function TarotCard({ drawnCard, isRevealed, onClick }: Props) {
             {keywords.map((kw) => (
               <span
                 key={kw}
-                className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-foreground/70"
+                className="rounded-full bg-tag-bg px-2 py-0.5 text-[10px] text-foreground/70"
               >
                 {kw}
               </span>

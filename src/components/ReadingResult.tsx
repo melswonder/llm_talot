@@ -42,7 +42,7 @@ export default function ReadingResult({ reading, drawnCards, onReset }: Props) {
 
       {/* AI Reading */}
       <div className="rounded-xl border border-card-border bg-card-bg p-6">
-        <div className="prose prose-invert prose-sm max-w-none whitespace-pre-wrap text-foreground/90">
+        <div className="max-w-none whitespace-pre-wrap text-sm text-foreground/90">
           {reading}
         </div>
       </div>
