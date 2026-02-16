@@ -1,4 +1,4 @@
-# これはvive kanbanのテスト用ブランチです
+# これはvibe kanbanのテスト用ブランチです
 
 
 
