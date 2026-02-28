@@ -7,6 +7,35 @@
   --accent-dim: #6d28d9;
   --card-bg: #1a1630;
   --card-border: #2d2754;
+  --tag-bg: rgba(255, 255, 255, 0.1);
+  --badge-bg: rgba(107, 33, 168, 0.8);
+  --badge-text: #e9d5ff;
+  --error-bg: rgba(239, 68, 68, 0.1);
+  --error-text: #f87171;
+  --suit-wands-bg: rgba(69, 10, 10, 0.3);
+  --suit-cups-bg: rgba(23, 37, 84, 0.3);
+  --suit-swords-bg: rgba(15, 23, 42, 0.3);
+  --suit-pentacles-bg: rgba(6, 78, 59, 0.3);
+  --suit-major-bg: rgba(69, 26, 3, 0.3);
+}
+
+.light {
+  --background: #f5f3ff;
+  --foreground: #1e1b2e;
+  --accent: #7c3aed;
+  --accent-dim: #6d28d9;
+  --card-bg: #ede9fe;
+  --card-border: #c4b5fd;
+  --tag-bg: rgba(0, 0, 0, 0.08);
+  --badge-bg: rgba(233, 213, 255, 0.9);
+  --badge-text: #6b21a8;
+  --error-bg: rgba(239, 68, 68, 0.08);
+  --error-text: #dc2626;
+  --suit-wands-bg: rgba(254, 226, 226, 0.5);
+  --suit-cups-bg: rgba(219, 234, 254, 0.5);
+  --suit-swords-bg: rgba(241, 245, 249, 0.5);
+  --suit-pentacles-bg: rgba(209, 250, 229, 0.5);
+  --suit-major-bg: rgba(254, 243, 199, 0.5);
 }
 
 @theme inline {
@@ -16,6 +45,16 @@
   --color-accent-dim: var(--accent-dim);
   --color-card-bg: var(--card-bg);
   --color-card-border: var(--card-border);
+  --color-tag-bg: var(--tag-bg);
+  --color-badge-bg: var(--badge-bg);
+  --color-badge-text: var(--badge-text);
+  --color-error-bg: var(--error-bg);
+  --color-error-text: var(--error-text);
+  --color-suit-wands-bg: var(--suit-wands-bg);
+  --color-suit-cups-bg: var(--suit-cups-bg);
+  --color-suit-swords-bg: var(--suit-swords-bg);
+  --color-suit-pentacles-bg: var(--suit-pentacles-bg);
+  --color-suit-major-bg: var(--suit-major-bg);
   --font-sans: var(--font-noto-sans-jp);
 }
 
@@ -33,4 +72,9 @@ body::before {
   background: radial-gradient(ellipse at 50% 0%, rgba(139, 92, 246, 0.12) 0%, transparent 60%);
   pointer-events: none;
   z-index: 0;
+}
+
+.light body::before,
+body.light-bg::before {
+  background: radial-gradient(ellipse at 50% 0%, rgba(124, 58, 237, 0.08) 0%, transparent 60%);
 }
