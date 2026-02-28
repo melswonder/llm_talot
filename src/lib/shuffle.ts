@@ -30,13 +30,16 @@ export function shuffleDeck(seed: number): TarotCard[] {
   return deck;
 }
 
-export function drawThreeCardSpread(seed: number): DrawnCard[] {
-  const shuffled = shuffleDeck(seed);
-  const rng = mulberry32(seed + 1);
-  const positions = ["past", "present", "future"] as const;
-  return positions.map((position, i) => ({
-    card: shuffled[i],
+const POSITIONS = ["past", "present", "future"] as const;
+
+export function assignPositions(
+  selectedCards: TarotCard[],
+  seed: number,
+): DrawnCard[] {
+  const rng = mulberry32(seed);
+  return selectedCards.map((card, i) => ({
+    card,
     isReversed: rng() > 0.5,
-    position,
+    position: POSITIONS[i],
   }));
 }

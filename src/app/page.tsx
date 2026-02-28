@@ -4,11 +4,12 @@ import { useReducer, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
-import { Category, DrawnCard, ReadingStep } from "@/lib/types";
-import { createSeed, drawThreeCardSpread } from "@/lib/shuffle";
+import { Category, DrawnCard, ReadingStep, TarotCard } from "@/lib/types";
+import { createSeed, shuffleDeck, assignPositions } from "@/lib/shuffle";
 import { useReading } from "@/hooks/useReading";
 import StepIndicator from "@/components/StepIndicator";
 import QuestionInput from "@/components/QuestionInput";
+import CardSelect from "@/components/CardSelect";
 import CardSpread from "@/components/CardSpread";
 import LoadingOracle from "@/components/LoadingOracle";
 import ReadingResult from "@/components/ReadingResult";
@@ -17,12 +18,16 @@ interface State {
   step: ReadingStep;
   question: string;
   category: Category | null;
+  shuffledDeck: TarotCard[];
+  selectedCards: TarotCard[];
   drawnCards: DrawnCard[];
   revealedCount: number;
+  seed: number;
 }
 
 type Action =
   | { type: "SUBMIT_QUESTION"; question: string; category: Category }
+  | { type: "SELECT_CARD"; card: TarotCard }
   | { type: "REVEAL_CARD" }
   | { type: "START_READING" }
   | { type: "READING_COMPLETE" }
@@ -32,22 +37,45 @@ const initialState: State = {
   step: "input",
   question: "",
   category: null,
+  shuffledDeck: [],
+  selectedCards: [],
   drawnCards: [],
   revealedCount: 0,
+  seed: 0,
 };
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
     case "SUBMIT_QUESTION": {
       const seed = createSeed(action.question);
-      const drawnCards = drawThreeCardSpread(seed);
+      const shuffledDeck = shuffleDeck(seed);
       return {
         ...state,
-        step: "spread",
+        step: "select",
         question: action.question,
         category: action.category,
-        drawnCards,
+        shuffledDeck,
+        selectedCards: [],
+        drawnCards: [],
         revealedCount: 0,
+        seed,
+      };
+    }
+    case "SELECT_CARD": {
+      const newSelected = [...state.selectedCards, action.card];
+      if (newSelected.length === 3) {
+        const drawnCards = assignPositions(newSelected, state.seed);
+        return {
+          ...state,
+          step: "spread",
+          selectedCards: newSelected,
+          drawnCards,
+          revealedCount: 0,
+        };
+      }
+      return {
+        ...state,
+        selectedCards: newSelected,
       };
     }
     case "REVEAL_CARD": {
@@ -141,6 +169,15 @@ export default function Home() {
               onSubmit={(question, category) =>
                 dispatch({ type: "SUBMIT_QUESTION", question, category })
               }
+            />
+          )}
+
+          {state.step === "select" && (
+            <CardSelect
+              key="select"
+              deck={state.shuffledDeck}
+              selectedCards={state.selectedCards}
+              onSelect={(card) => dispatch({ type: "SELECT_CARD", card })}
             />
           )}
 

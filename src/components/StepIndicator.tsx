@@ -4,6 +4,7 @@ import { ReadingStep } from "@/lib/types";
 
 const STEPS: { key: ReadingStep; label: string }[] = [
   { key: "input", label: "質問" },
+  { key: "select", label: "選択" },
   { key: "spread", label: "カード" },
   { key: "reading", label: "占い" },
   { key: "result", label: "結果" },
