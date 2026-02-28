@@ -22,10 +22,12 @@ const SUIT_ICONS: Record<Suit | "major", string> = {
 interface Props {
   drawnCard: DrawnCard;
   isRevealed: boolean;
+  isClickable: boolean;
   onClick: () => void;
+  onAnimationComplete: () => void;
 }
 
-export default function TarotCard({ drawnCard, isRevealed, onClick }: Props) {
+export default function TarotCard({ drawnCard, isRevealed, isClickable, onClick, onAnimationComplete }: Props) {
   const { card, isReversed } = drawnCard;
   const suitKey = card.suit ?? "major";
   const keywords = isReversed
@@ -39,9 +41,14 @@ export default function TarotCard({ drawnCard, isRevealed, onClick }: Props) {
         style={{ transformStyle: "preserve-3d" }}
         animate={{ rotateY: isRevealed ? 180 : 0 }}
         transition={{ duration: 0.6, ease: "easeInOut" }}
-        onClick={!isRevealed ? onClick : undefined}
-        whileHover={!isRevealed ? { scale: 1.05 } : undefined}
-        whileTap={!isRevealed ? { scale: 0.95 } : undefined}
+        onAnimationComplete={() => {
+          if (isRevealed) {
+            onAnimationComplete();
+          }
+        }}
+        onClick={isClickable ? onClick : undefined}
+        whileHover={isClickable ? { scale: 1.05 } : undefined}
+        whileTap={isClickable ? { scale: 0.95 } : undefined}
       >
         {/* Card Back */}
         <div

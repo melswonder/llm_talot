@@ -19,11 +19,13 @@ interface State {
   category: Category | null;
   drawnCards: DrawnCard[];
   revealedCount: number;
+  isAnimating: boolean;
 }
 
 type Action =
   | { type: "SUBMIT_QUESTION"; question: string; category: Category }
   | { type: "REVEAL_CARD" }
+  | { type: "ANIMATION_COMPLETE" }
   | { type: "START_READING" }
   | { type: "READING_COMPLETE" }
   | { type: "RESET" };
@@ -34,6 +36,7 @@ const initialState: State = {
   category: null,
   drawnCards: [],
   revealedCount: 0,
+  isAnimating: false,
 };
 
 function reducer(state: State, action: Action): State {
@@ -55,8 +58,14 @@ function reducer(state: State, action: Action): State {
       return {
         ...state,
         revealedCount: newCount,
+        isAnimating: true,
       };
     }
+    case "ANIMATION_COMPLETE":
+      return {
+        ...state,
+        isAnimating: false,
+      };
     case "START_READING":
       return { ...state, step: "reading" };
     case "READING_COMPLETE":
@@ -149,7 +158,9 @@ export default function Home() {
               key="spread"
               drawnCards={state.drawnCards}
               revealedCount={state.revealedCount}
+              isAnimating={state.isAnimating}
               onReveal={() => dispatch({ type: "REVEAL_CARD" })}
+              onAnimationComplete={() => dispatch({ type: "ANIMATION_COMPLETE" })}
             />
           )}
 

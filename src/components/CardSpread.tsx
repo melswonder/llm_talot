@@ -13,10 +13,12 @@ const POSITION_LABELS = {
 interface Props {
   drawnCards: DrawnCard[];
   revealedCount: number;
+  isAnimating: boolean;
   onReveal: (index: number) => void;
+  onAnimationComplete: () => void;
 }
 
-export default function CardSpread({ drawnCards, revealedCount, onReveal }: Props) {
+export default function CardSpread({ drawnCards, revealedCount, isAnimating, onReveal, onAnimationComplete }: Props) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -37,11 +39,13 @@ export default function CardSpread({ drawnCards, revealedCount, onReveal }: Prop
             <TarotCard
               drawnCard={drawnCard}
               isRevealed={i < revealedCount}
+              isClickable={i === revealedCount && !isAnimating}
               onClick={() => {
-                if (i === revealedCount) {
+                if (i === revealedCount && !isAnimating) {
                   onReveal(i);
                 }
               }}
+              onAnimationComplete={onAnimationComplete}
             />
           </div>
         ))}
